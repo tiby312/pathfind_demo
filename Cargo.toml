@@ -1,0 +1,21 @@
+[package]
+name = "pathfind_demo"
+version = "0.1.0"
+authors = ["Ken Reed <kenakioreed@gmail.com>"]
+edition = "2018"
+
+
+[dependencies]
+num_cpus = "1.10.1"
+fps_counter = "1.0.0"
+demodesktopgraphics = {git = "https://github.com/tiby312/demodesktopgraphics.git"}
+rayon = "1.2"
+axgeom = "*"
+pathfind = {path="../pathfind"}
+
+
+[patch.'https://github.com/tiby312/demodesktopgraphics.git']
+demodesktopgraphics = {path="../demodesktopgraphics"}
+
+[patch.'https://github.com/tiby312/dinotreedemomenu']
+dinotreedemomenu = {path="../dinotreedemomenu"}
