@@ -1,6 +1,9 @@
 use demodesktopgraphics::glutin;
 use demodesktopgraphics::GlSys;
-use demodesktopgraphics::Vertex;
+use demodesktopgraphics::circle_program;
+use demodesktopgraphics::vbo::*;
+
+
 use axgeom::Vec2;
 use axgeom::vec2;
 use fps_counter::FPSCounter;
@@ -20,19 +23,21 @@ fn main() {
     let mut botsys=pathfind::game::Game::new();
 
     let mut glsys=GlSys::new(&events_loop);
-    
+    let mut circle_program=circle_program::CircleProgram::new();
 
-    let (startx,starty)=glsys.get_dim();
+    let dim=glsys.get_dim();
+    println!("dim={:?}",dim);
     
     //let mut border=compute_border(game_response.new_game_world.unwrap().0,[startx as f32,starty as f32]);
-    let border=axgeom::Rect::new(-200.0,200.0,-200.0,200.0);
+    let border=axgeom::Rect::new(0.0,1920.,0.0,1080.);
+    
     let radius=10.0;
 
     
 
-    let mut bot_buffer=demodesktopgraphics::Buffer::create_vbo(0);
+    let mut bot_buffer=Buffer::create_vbo(0);
 
-    let mut wall_buffer=demodesktopgraphics::Buffer::create_vbo(0);
+    let mut wall_buffer=Buffer::create_vbo(0);
         
 
     struct Ba{
@@ -143,46 +148,73 @@ fn main() {
 
                     let mut va:Vec<Vec2<f32>>=poses.iter().map(|a|a.pos).collect();
                     if mouse_active{
-                        let mouseposx=mousepos.x-(startx as f32/2.0);
-                        let mouseposy=mousepos.y-(starty as f32/2.0);
+                        let mouseposx=mousepos.x-(dim.x as f32/2.0);
+                        let mouseposy=mousepos.y-(dim.y as f32/2.0);
                     
                         let ((x1,x2),(y1,y2))=border.get();
                         let w=x2-x1;
                         let h=y2-y1;
 
-                        let mouseposx=mouseposx*(w/startx as f32);
-                        let mouseposy=mouseposy*(h/starty as f32);
+                        let mouseposx=mouseposx*(w/dim.x as f32);
+                        let mouseposy=mouseposy*(h/dim.y as f32);
                        
                         va.push(vec2(mouseposx,mouseposy));
                     }
 
+                    botsys.step();
 
 
-                    if botsys.wall_len()!=wall_buffer.get_num_verticies(){
-                        wall_buffer.re_generate_buffer(botsys.wall_len()); 
-                    }
+                    let wall_radius={
+                        let grid = botsys.get_wall_grid();
 
-                    for (a,b) in wall_buffer.get_verts_mut().iter_mut().zip(botsys.wall_iter()){
-                        *a=Vertex([b.x,b.y,1.0]);
-                    }
-                    wall_buffer.update();
+                        if grid.inner.len()!=wall_buffer.get_num_verticies(){
+                            wall_buffer.re_generate_buffer(grid.inner.len()); 
+                        }
 
+
+                        let mut ww=wall_buffer.get_verts_mut().iter_mut();
+
+                        for ((a,w),b) in grid.inner.iter().zip(ww){
+                            let alpha=if w{
+                                1.0
+                            }else{
+                                0.2
+                            };
+                            let a=grid.convert_to_world(a);
+                            //let a=a+grid.cell_radius();
+
+                            *b=circle_program::Vertex([a.x,a.y,alpha]);
+                        }
+
+                        /*
+                        for (a,b) in wall_buffer.get_verts_mut().iter_mut().zip(botsys.wall_iter()){
+                            *a=Vertex([b.x,b.y,1.0]);
+                        }
+                        */
+                        wall_buffer.update();
+
+                        let k=grid.cell_radius();
+                        assert_eq!(k.x,k.y);
+                        k.x
+                    };
                     
                     
                     if botsys.bot_len()!=bot_buffer.get_num_verticies(){
                         bot_buffer.re_generate_buffer(botsys.bot_len()); 
                     }
-                    for (a,b) in bot_buffer.get_verts_mut().iter_mut().zip(botsys.bots_iter()){
+                    let (bot_prop,bots)=botsys.get_bots();
+                    for (a,b) in bot_buffer.get_verts_mut().iter_mut().zip(bots.iter()){
+                        let b=b.get();
                         let alpha=b.vel.magnitude2()*0.01;
-                        *a=Vertex([b.pos.x,b.pos.y,0.5+alpha])
+                        *a=circle_program::Vertex([b.pos.x,b.pos.y,0.5+alpha])
                     }
                     bot_buffer.update();
                     
 
-                    let mut ss=glsys.new_draw_session([0.0,0.0,0.0],border);
-                    ss.draw_vbo_section(&wall_buffer,0,botsys.wall_len(),[1.0,1.0,1.0],10.0,true);
-                    ss.draw_vbo_section(&bot_buffer,0,botsys.bot_len(),[1.0,1.0,1.0],2.0,false);
-                    ss.finish();
+                    let mut ss=circle_program.new_draw_session([0.0,0.0,0.0],border);
+                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().inner.len(),[1.0,0.0,1.0],wall_radius);
+                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis());
+                    glsys.swap_buffers();
         
                     /*
                     let mut ss=glsys.new_draw_session([0.0,0.0,0.0],border,radius,false);
