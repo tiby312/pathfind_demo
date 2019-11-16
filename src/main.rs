@@ -180,8 +180,8 @@ fn main() {
                             }else{
                                 0.2
                             };
-                            let a=grid.convert_to_world(a);
-                            //let a=a+grid.cell_radius();
+                            let a=grid.convert_to_world_topleft(a);
+                            let a=a+grid.cell_radius()/2.0;
 
                             *b=circle_program::Vertex([a.x,a.y,alpha]);
                         }
@@ -212,8 +212,8 @@ fn main() {
                     
 
                     let mut ss=circle_program.new_draw_session([0.0,0.0,0.0],border);
-                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().inner.len(),[1.0,0.0,1.0],wall_radius);
-                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis());
+                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().inner.len(),[1.0,0.0,1.0],wall_radius,false);
+                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis(),true);
                     glsys.swap_buffers();
         
                     /*
