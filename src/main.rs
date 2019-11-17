@@ -165,22 +165,22 @@ fn main() {
 
 
                     let wall_radius={
-                        let grid = botsys.get_wall_grid();
+                        let (grid,walls) = botsys.get_wall_grid();
 
-                        if grid.inner.len()!=wall_buffer.get_num_verticies(){
-                            wall_buffer.re_generate_buffer(grid.inner.len()); 
+                        if walls.len()!=wall_buffer.get_num_verticies(){
+                            wall_buffer.re_generate_buffer(walls.len()); 
                         }
 
 
                         let mut ww=wall_buffer.get_verts_mut().iter_mut();
 
-                        for ((a,w),b) in grid.inner.iter().zip(ww){
+                        for ((a,w),b) in walls.iter().zip(ww){
                             let alpha=if w{
                                 1.0
                             }else{
                                 0.2
                             };
-                            let a=grid.convert_to_world_topleft(a);
+                            let a=grid.to_world_topleft(a);
                             let a=a+grid.cell_radius()/2.0;
 
                             *b=circle_program::Vertex([a.x,a.y,alpha]);
@@ -212,7 +212,7 @@ fn main() {
                     
 
                     let mut ss=circle_program.new_draw_session([0.0,0.0,0.0],border);
-                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().inner.len(),[1.0,0.0,1.0],wall_radius,false);
+                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().1.len(),[1.0,0.0,1.0],wall_radius,false);
                     ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis(),true);
                     glsys.swap_buffers();
         
