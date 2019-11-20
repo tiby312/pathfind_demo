@@ -212,8 +212,8 @@ fn main() {
                     
 
                     let mut ss=circle_program.new_draw_session([0.0,0.0,0.0],border);
-                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().1.len(),[1.0,0.0,1.0],wall_radius,false);
-                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis(),true);
+                    ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().1.len(),[1.0,0.0,1.0],wall_radius*0.9,false);
+                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis()*0.5,true);
                     glsys.swap_buffers();
         
                     /*
