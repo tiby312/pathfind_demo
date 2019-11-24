@@ -8,7 +8,7 @@ use axgeom::Vec2;
 use axgeom::vec2;
 use fps_counter::FPSCounter;
 use glutin::event::WindowEvent;
-use glutin::event::ElementState;
+
 use glutin::event::VirtualKeyCode;
 use glutin::event::Event;
 use glutin::event_loop::ControlFlow;
@@ -17,7 +17,7 @@ fn main() {
     rayon::ThreadPoolBuilder::new().num_threads(num_cpus::get_physical()).build_global().unwrap();
      
 
-    let mut events_loop = glutin::event_loop::EventLoop::new();
+    let events_loop = glutin::event_loop::EventLoop::new();
 
 
     let mut botsys=pathfind::game::Game::new();
@@ -31,7 +31,7 @@ fn main() {
     //let mut border=compute_border(game_response.new_game_world.unwrap().0,[startx as f32,starty as f32]);
     let border=axgeom::Rect::new(0.0,1920.,0.0,1080.);
     
-    let radius=10.0;
+    let _radius=10.0;
 
     
 
@@ -49,7 +49,7 @@ fn main() {
     let mut mouse_active=false;
     let mut poses:Vec<Ba>=Vec::new(); 
     
-    let mut fps=FPSCounter::new();
+    let _fps=FPSCounter::new();
 
     let mut last_time:Option<std::time::Instant>=None;
 
@@ -172,7 +172,7 @@ fn main() {
                         }
 
 
-                        let mut ww=wall_buffer.get_verts_mut().iter_mut();
+                        let ww=wall_buffer.get_verts_mut().iter_mut();
 
                         for ((a,w),b) in walls.iter().zip(ww){
                             let alpha=if w{
@@ -205,7 +205,7 @@ fn main() {
                     let (bot_prop,bots)=botsys.get_bots();
                     for (a,b) in bot_buffer.get_verts_mut().iter_mut().zip(bots.iter()){
                         let b=b.get();
-                        let alpha=b.vel.magnitude2()*0.01;
+                        let _alpha=b.vel.magnitude2()*0.01;
                         *a=circle_program::Vertex([b.pos.x,b.pos.y,1.0])
                     }
                     bot_buffer.update();
