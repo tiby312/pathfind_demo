@@ -17,5 +17,9 @@ pathfind = {path="../pathfind"}
 [patch.'https://github.com/tiby312/demodesktopgraphics.git']
 demodesktopgraphics = {path="../demodesktopgraphics"}
 
-[patch.'https://github.com/tiby312/dinotreedemomenu']
-dinotreedemomenu = {path="../dinotreedemomenu"}
+
+
+[patch.crates-io]
+duckduckgeo = {path="../duckduckgeo"}
+axgeom = {path="../axgeom"}
+
