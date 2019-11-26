@@ -186,8 +186,8 @@ fn default_main() {
                             }else{
                                 0.2
                             };
-                            let a=grid.to_world_topleft(a);
-                            let a=a+grid.cell_radius()/2.0;
+                            let a=grid.to_world_center(a);
+                            //let a=a+grid.cell_radius()/2.0;
 
                             *b=circle_program::Vertex([a.x,a.y,alpha]);
                         }
@@ -199,9 +199,7 @@ fn default_main() {
                         */
                         wall_buffer.update();
 
-                        let k=grid.cell_radius();
-                        assert_eq!(k.x,k.y);
-                        k.x
+                        grid.cell_radius() 
                     };
                     
                     
@@ -210,7 +208,7 @@ fn default_main() {
                     }
                     let (bot_prop,bots)=botsys.get_bots();
                     for (a,b) in bot_buffer.get_verts_mut().iter_mut().zip(bots.iter()){
-                        let b=b.get();
+                        let b=&b.bot;
                         let _alpha=b.vel.magnitude2()*0.01;
                         *a=circle_program::Vertex([b.pos.x,b.pos.y,1.0])
                     }

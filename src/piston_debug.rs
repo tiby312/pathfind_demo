@@ -67,14 +67,15 @@ pub fn piston_debug() {
                 for y in 0..walls.dim().y{
                     if walls.get(vec2(x,y)){
                         let topleft=grid.to_world_topleft(vec2(x,y)).inner_as::<f64>();
-                        let r=grid.spacing.x as f64;
+                        let r=grid.spacing as f64;
                         rectangle([1.0,1.0,1.0,0.5], [topleft.x,topleft.y,r,r], c.transform, g);
                     }
                 }
             }
             for b in bots.iter(){
-                let p=b.get().pos.inner_as::<f64>();
+                let p=b.bot.pos.inner_as::<f64>();
                 let r=bot_prop.radius.dis() as f64;
+                let r=r*0.2;
                 rectangle([1.0,0.0,1.0,2.0], [p.x-r,p.y-r,r*2.,r*2.], c.transform, g);
             }
         });
