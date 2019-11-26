@@ -28,13 +28,21 @@ pub fn piston_debug() {
 
     let mut cursor: Vec2<_> = vec2(0.0, 0.0).inner_try_into().unwrap();
 
-    let mut check_naive = false;
+
+    let mut botsys=pathfind::game::Game::new();
+
     while let Some(e) = window.next() {
         e.mouse_cursor(|[x, y]| {
             //cursor = vec2(x,y).inner_into::<f32>().inner_try_into::<F32n>().unwrap();
             cursor.x = NotNan::new(x as f32).unwrap();
             cursor.y = NotNan::new(y as f32).unwrap();
         });
+
+        botsys.step();
+
+        let (grid,walls) = botsys.get_wall_grid();
+
+        let (bot_prop,bots)=botsys.get_bots();
         /*
         if let Some(Button::Keyboard(key)) = e.press_args() {
             if key == Key::N {
@@ -55,6 +63,20 @@ pub fn piston_debug() {
             clear([0.2; 4], g);
             c.view(); //trans(500.0,500.0);
             //curr.step(cursor, &c, &mut g, check_naive);
+            for x in 0..walls.dim().x{
+                for y in 0..walls.dim().y{
+                    if walls.get(vec2(x,y)){
+                        let topleft=grid.to_world_topleft(vec2(x,y)).inner_as::<f64>();
+                        let r=grid.spacing.x as f64;
+                        rectangle([1.0,1.0,1.0,0.5], [topleft.x,topleft.y,r,r], c.transform, g);
+                    }
+                }
+            }
+            for b in bots.iter(){
+                let p=b.get().pos.inner_as::<f64>();
+                let r=bot_prop.radius.dis() as f64;
+                rectangle([1.0,0.0,1.0,2.0], [p.x-r,p.y-r,r*2.,r*2.], c.transform, g);
+            }
         });
     }
 }
