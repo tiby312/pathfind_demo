@@ -13,7 +13,13 @@ use glutin::event::VirtualKeyCode;
 use glutin::event::Event;
 use glutin::event_loop::ControlFlow;
 
-fn main() {
+mod piston_debug;
+
+fn main(){
+    piston_debug::piston_debug();
+}
+
+fn default_main() {
     rayon::ThreadPoolBuilder::new().num_threads(num_cpus::get_physical()).build_global().unwrap();
      
 
@@ -213,7 +219,7 @@ fn main() {
 
                     let mut ss=circle_program.new_draw_session([0.0,0.0,0.0],border);
                     ss.draw_vbo_section(dim,&wall_buffer,0,botsys.get_wall_grid().1.len(),[1.0,0.0,1.0],wall_radius*0.9,false);
-                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis()*0.2,true);
+                    ss.draw_vbo_section(dim,&bot_buffer,0,botsys.bot_len(),[1.0,1.0,0.0],bot_prop.radius.dis()*0.3,true);
                     glsys.swap_buffers();
         
                     /*

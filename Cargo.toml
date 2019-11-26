@@ -12,7 +12,7 @@ demodesktopgraphics = {git = "https://github.com/tiby312/demodesktopgraphics.git
 rayon = "1.2"
 axgeom = "*"
 pathfind = {path="../pathfind"}
-
+piston_window = "0.103.0"
 
 [patch.'https://github.com/tiby312/demodesktopgraphics.git']
 demodesktopgraphics = {path="../demodesktopgraphics"}
