@@ -13,9 +13,13 @@ use glutin::event::VirtualKeyCode;
 use glutin::event::Event;
 use glutin::event_loop::ControlFlow;
 
+
+
+//TODO make this a feature dependency.
 mod piston_debug;
 
 fn main(){
+    //default_main();
     piston_debug::piston_debug();
 }
 

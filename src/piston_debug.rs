@@ -10,11 +10,12 @@ pub fn piston_debug() {
         .build_global()
         .unwrap();
 
-    let area = vec2(1024, 768);
+    let area= vec2(1920,1080);
+    //let area = vec2(1024, 768);
     
     let window = WindowSettings::new("dinotree test", [area.x, area.y])
         .exit_on_esc(true)
-        .fullscreen(false)
+        .fullscreen(true)
         .resizable(false);
 
     println!("window size={:?}", window.get_size());
@@ -61,6 +62,8 @@ pub fn piston_debug() {
         */
         window.draw_2d(&e, |c, mut g, _| {
             clear([0.2; 4], g);
+            let transform = c.transform;//.scale(0.5,0.5);
+
             c.view(); //trans(500.0,500.0);
             //curr.step(cursor, &c, &mut g, check_naive);
             for x in 0..walls.dim().x{
@@ -68,15 +71,30 @@ pub fn piston_debug() {
                     if walls.get(vec2(x,y)){
                         let topleft=grid.to_world_topleft(vec2(x,y)).inner_as::<f64>();
                         let r=grid.spacing as f64;
-                        rectangle([1.0,1.0,1.0,0.5], [topleft.x,topleft.y,r,r], c.transform, g);
+                        rectangle([1.0,1.0,1.0,0.5], [topleft.x,topleft.y,r,r], transform, g);
                     }
                 }
             }
             for b in bots.iter(){
                 let p=b.bot.pos.inner_as::<f64>();
+                
+                if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
+                    let curr=a.pos();
+                    let curr_pos=grid.to_world_center(curr).inner_into::<f64>();
+                    line([1.0, 0.0, 0.0, 0.3], 1.0, [p.x,p.y, curr_pos.x, curr_pos.y], transform, g);
+
+                    let next=a.peek();
+                    if let Some(next)=a.peek(){
+                        let next_pos=grid.to_world_center(next).inner_into::<f64>();
+                        line([0.0, 0.0, 1.0, 0.3], 1.0, [p.x,p.y, next_pos.x, next_pos.y], transform, g);
+                    }
+
+                }
+
+
                 let r=bot_prop.radius.dis() as f64;
                 let r=r*0.2;
-                rectangle([1.0,0.0,1.0,2.0], [p.x-r,p.y-r,r*2.,r*2.], c.transform, g);
+                rectangle([1.0,0.0,1.0,2.0], [p.x-r,p.y-r,r*2.,r*2.], transform, g);
             }
         });
     }
