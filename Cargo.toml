@@ -8,18 +8,9 @@ edition = "2018"
 [dependencies]
 num_cpus = "1.10.1"
 fps_counter = "1.0.0"
-demodesktopgraphics = {git = "https://github.com/tiby312/demodesktopgraphics.git"}
 rayon = "1.2"
 axgeom = "*"
 pathfind = {path="../pathfind"}
-piston_window = "0.103.0"
-
-[patch.'https://github.com/tiby312/demodesktopgraphics.git']
-demodesktopgraphics = {path="../demodesktopgraphics"}
-
-
-
-[patch.crates-io]
-duckduckgeo = {path="../duckduckgeo"}
-axgeom = {path="../axgeom"}
+ordered-float = "1.0.2"
+very_simple_2d = {path="../very_simple_2d"}
 
