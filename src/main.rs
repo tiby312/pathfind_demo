@@ -79,7 +79,7 @@ fn main() {
                     let (bot_prop,bots)=botsys.get_bots();
 
                     {
-                        let mut draw_session=glsys.get_sys();
+                        let mut draw_session=glsys.session();
 
                         {
                             let mut squares = draw_session.squares([1.0,1.0,1.0,0.5],grid.spacing*0.5);
