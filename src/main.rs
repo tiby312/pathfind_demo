@@ -27,8 +27,7 @@ fn main() {
 
 
     let mut timer=very_simple_2d::RefreshTimer::new(16);
-    //let mut last_time:Option<std::time::Instant>=None;
-
+   
     events_loop.run(move |event,_,control_flow| {
         match event {
             Event::WindowEvent{ event, .. } => match event {
@@ -83,7 +82,7 @@ fn main() {
                         let mut draw_session=glsys.get_sys();
 
                         {
-                            let mut squares = draw_session.squares(grid.spacing*0.5,[1.0,1.0,1.0,0.5]);
+                            let mut squares = draw_session.squares([1.0,1.0,1.0,0.5],grid.spacing*0.5);
 
                             for x in 0..walls.dim().x{
                                 for y in 0..walls.dim().y{
@@ -96,7 +95,7 @@ fn main() {
                         }
 
                         {
-                            let mut lines = draw_session.lines(1.0,[1.0,0.0,0.0,0.3]);
+                            let mut lines = draw_session.lines([1.0,0.0,0.0,0.3],1.0);
                             for b in bots.iter(){
 
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
@@ -108,7 +107,7 @@ fn main() {
                             lines.draw();
                         }
                         {
-                            let mut lines = draw_session.lines(1.0,[0.0,0.0,1.0,0.3]);
+                            let mut lines = draw_session.lines([0.0,0.0,1.0,0.3],1.0);
                             for b in bots.iter(){
 
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
@@ -121,31 +120,9 @@ fn main() {
                             }
                             lines.draw();
                         }
-                        /*
-                        for b in bots.iter(){
-                            let p=b.bot.pos.inner_as::<f64>();
-                            
-                            if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
-                                let curr=a.pos();
-                                let curr_pos=grid.to_world_center(curr).inner_into::<f64>();
-                                line([1.0, 0.0, 0.0, 0.3], 1.0, [p.x,p.y, curr_pos.x, curr_pos.y], transform, g);
+                        
 
-                                let next=a.peek();
-                                if let Some(next)=a.peek(){
-                                    let next_pos=grid.to_world_center(next).inner_into::<f64>();
-                                    line([0.0, 0.0, 1.0, 0.3], 1.0, [p.x,p.y, next_pos.x, next_pos.y], transform, g);
-                                }
-
-                            }
-
-
-                            let r=bot_prop.radius.dis() as f64;
-                            let r=r*0.2;
-                            rectangle([1.0,0.0,1.0,2.0], [p.x-r,p.y-r,r*2.,r*2.], transform, g);
-                        }
-                        */
-
-                        let mut circles = draw_session.circles(bot_prop.radius.dis()*0.2,[1.0,0.0,1.0,2.0]);
+                        let mut circles = draw_session.circles([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
                         for b in bots.iter(){
                             circles.add(b.bot.pos);
                         }
