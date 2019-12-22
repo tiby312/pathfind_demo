@@ -1,8 +1,6 @@
 
-use very_simple_2d::*;
 use very_simple_2d::glutin;
 
-use axgeom::Vec2;
 use axgeom::vec2;
 use fps_counter::FPSCounter;
 use glutin::event::WindowEvent;
@@ -10,25 +8,6 @@ use glutin::event::WindowEvent;
 use glutin::event::VirtualKeyCode;
 use glutin::event::Event;
 use glutin::event_loop::ControlFlow;
-
-/*
-use glutin::event::WindowEvent;
-
-use glutin::event::VirtualKeyCode;
-use glutin::event::Event;
-use glutin::event_loop::ControlFlow;
-*/
-
-
-//TODO make this a feature dependency.
-//mod piston_debug;
-
-/*
-fn main(){
-    //default_main();
-    piston_debug::piston_debug();
-}
-*/
 
 
 fn main() {
@@ -38,35 +17,17 @@ fn main() {
 
     let (mut botsys,area)=pathfind::game::Game::new();
 
-    //let area= vec2(1920,1080);
-
     let mut glsys=very_simple_2d::WindowedSystem::new(area.inner_as(),&events_loop);
-    //let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
-    //glsys.set_viewport_from_width(1920.);
-
-    let window_border:Vec2<f32>=glsys.get_dim().inner_as();
-    let aspect_ratio=axgeom::AspectRatio(window_border.inner_as());
-
-    //let symbols=Symbols::new();
-
     
-
-    //let (mut botsys,game_response)=MenuGame::new(aspect_ratio,&symbols);
-    
-
-    //let mut border=game_response.new_game_world.unwrap().0;
-    //glsys.set_viewport_from_width(border.width as f32);
-    //let radius=game_response.new_game_world.unwrap().1;
-    
-    //let mut color=game_response.color.unwrap();
-
 
     let mut mousepos=vec2(0.0,0.0);
     let mut mouse_active=false;
     
     let _fps=FPSCounter::new();
 
-    let mut last_time:Option<std::time::Instant>=None;
+
+    let mut timer=very_simple_2d::RefreshTimer::new(16);
+    //let mut last_time:Option<std::time::Instant>=None;
 
     events_loop.run(move |event,_,control_flow| {
         match event {
@@ -103,20 +64,7 @@ fn main() {
                 _=>{}
             },
             Event::EventsCleared=>{
-                let do_run = match last_time{
-                    Some(last_time)=>{
-                        if last_time.elapsed().as_millis()>=16{
-                            true
-                        }else{
-                            false
-                        }
-                    },
-                    None=>{
-                        true
-                    }
-                };
-
-                if do_run{
+                if timer.is_ready(){
 
                     if mouse_active{
                         /*
@@ -204,9 +152,6 @@ fn main() {
                         circles.draw();
                     }
                     glsys.swap_buffers();
-                    
-
-                    last_time=Some(std::time::Instant::now());
                 }
             },
             _ => {},
