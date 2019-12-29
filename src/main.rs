@@ -20,6 +20,21 @@ fn main() {
     let mut glsys=very_simple_2d::WindowedSystem::new(area.inner_as(),&events_loop);
     
 
+    let square_save={
+        let (grid,walls) = botsys.get_wall_grid();
+                    
+        let mut squares = glsys.inner_mut().squares([1.0,1.0,1.0,0.5],grid.spacing*0.5);
+
+        for x in 0..walls.dim().x{
+            for y in 0..walls.dim().y{
+                if walls.get(vec2(x,y)){
+                    squares.add(grid.to_world_center(vec2(x,y)));
+                }
+            }
+        }
+        squares.save()
+    };
+
     let mut mousepos=vec2(0.0,0.0);
     let mut mouse_active=false;
     
@@ -79,20 +94,9 @@ fn main() {
                     let (bot_prop,bots)=botsys.get_bots();
 
                     {
-                        let mut draw_session=glsys.session();
-
-                        {
-                            let mut squares = draw_session.squares([1.0,1.0,1.0,0.5],grid.spacing*0.5);
-
-                            for x in 0..walls.dim().x{
-                                for y in 0..walls.dim().y{
-                                    if walls.get(vec2(x,y)){
-                                        squares.add(grid.to_world_center(vec2(x,y)));
-                                    }
-                                }
-                            }
-                            squares.draw();
-                        }
+                        let mut draw_session=glsys.inner_mut();
+                        draw_session.clear_color([0.2,0.2,0.2]);
+                        square_save.draw(draw_session);
 
                         {
                             let mut lines = draw_session.lines([1.0,0.0,0.0,0.3],1.0);
@@ -104,7 +108,7 @@ fn main() {
                                     lines.add(b.bot.pos,curr_pos);
                                 }
                             }
-                            lines.draw();
+                            lines.send_and_draw();
                         }
                         {
                             let mut lines = draw_session.lines([0.0,0.0,1.0,0.3],1.0);
@@ -118,7 +122,7 @@ fn main() {
                                     }
                                 }
                             }
-                            lines.draw();
+                            lines.send_and_draw();
                         }
                         
 
@@ -126,7 +130,7 @@ fn main() {
                         for b in bots.iter(){
                             circles.add(b.bot.pos);
                         }
-                        circles.draw();
+                        circles.send_and_draw();
                     }
                     glsys.swap_buffers();
                 }

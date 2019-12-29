@@ -12,5 +12,8 @@ rayon = "1.2"
 axgeom = "*"
 pathfind = {path="../pathfind"}
 ordered-float = "1.0.2"
-very_simple_2d = "0.1"
+very_simple_2d = "0.2"
+
+#[patch.crates-io]
+#very_simple_2d={path="../very_simple_2d"}
 
