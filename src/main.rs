@@ -1,7 +1,7 @@
 
 use very_simple_2d::glutin;
 
-use axgeom::vec2;
+use axgeom::*;
 use fps_counter::FPSCounter;
 use glutin::event::WindowEvent;
 
@@ -17,18 +17,23 @@ fn main() {
 
     let (mut botsys,area)=pathfind::game::Game::new();
 
-    let mut glsys=very_simple_2d::WindowedSystem::new(area.inner_as(),&events_loop);
-    
+    //let mut glsys=very_simple_2d::WindowedSystem::new(area.inner_as(),&events_loop);
+    let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
+        
 
     let square_save={
         let (grid,walls) = botsys.get_wall_grid();
                     
-        let mut squares = glsys.inner_mut().squares([1.0,1.0,1.0,0.5],grid.spacing*0.5);
+        let mut squares = glsys.canvas_mut().rects(); //grid.spacing*0.5
 
         for x in 0..walls.dim().x{
             for y in 0..walls.dim().y{
                 if walls.get(vec2(x,y)){
-                    squares.add(grid.to_world_center(vec2(x,y)));
+                    let vv=grid.to_world_topleft(vec2(x,y));
+
+
+                    squares.add(rect(vv.x,vv.x+grid.spacing,vv.y,vv.y+grid.spacing));
+                    //squares.add(grid.to_world_topleft(vec2(x,y)));
                 }
             }
         }
@@ -79,7 +84,6 @@ fn main() {
             },
             Event::EventsCleared=>{
                 if timer.is_ready(){
-
                     if mouse_active{
                         /*
                         let v=vec2(border.width as f32*(mousepos.x/window_border.x),
@@ -90,16 +94,18 @@ fn main() {
                     }
 
                     botsys.step();
-                    let (grid,walls) = botsys.get_wall_grid();
+                    let (grid,_) = botsys.get_wall_grid();
                     let (bot_prop,bots)=botsys.get_bots();
 
                     {
-                        let mut draw_session=glsys.inner_mut();
-                        draw_session.clear_color([0.2,0.2,0.2]);
-                        square_save.draw(draw_session);
+                        let canvas=glsys.canvas_mut();
+                        canvas.clear_color([0.2,0.2,0.2]);
+
+
+                        square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
                         {
-                            let mut lines = draw_session.lines([1.0,0.0,0.0,0.3],1.0);
+                            let mut lines = canvas.lines(1.0);
                             for b in bots.iter(){
 
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
@@ -108,10 +114,10 @@ fn main() {
                                     lines.add(b.bot.pos,curr_pos);
                                 }
                             }
-                            lines.send_and_draw();
+                            lines.send_and_draw([1.0,0.0,0.0,0.3]);
                         }
                         {
-                            let mut lines = draw_session.lines([0.0,0.0,1.0,0.3],1.0);
+                            let mut lines = canvas.lines(1.0);
                             for b in bots.iter(){
 
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
@@ -122,15 +128,15 @@ fn main() {
                                     }
                                 }
                             }
-                            lines.send_and_draw();
+                            lines.send_and_draw([0.0,0.0,1.0,0.3]);
                         }
                         
 
-                        let mut circles = draw_session.circles([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
+                        let mut circles = canvas.circles(bot_prop.radius.dis()*0.2);
                         for b in bots.iter(){
                             circles.add(b.bot.pos);
                         }
-                        circles.send_and_draw();
+                        circles.send_and_draw([1.0,0.0,1.0,2.0]);
                     }
                     glsys.swap_buffers();
                 }
