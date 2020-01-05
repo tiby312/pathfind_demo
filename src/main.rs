@@ -30,7 +30,7 @@ fn main() {
 
     let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(23,9)).unwrap();
     
-    let mut dino_tex=glsys.canvas_mut().texture("dino.png",vec2(24,1)).unwrap();
+    let dino_tex=glsys.canvas_mut().texture("dino.png",vec2(24,1)).unwrap();
     
 
     //let mut texture=glsys.canvas_mut().texture("tileset2.png",vec2(15,4)).unwrap();
@@ -44,8 +44,7 @@ fn main() {
             for y in 0..walls.dim().y{
                 let curr=vec2(x,y);
                 if walls.get(curr){
-                    let vv=grid.to_world_topleft(curr);
-
+                    
                     
                     const TOP_LEFT:Vec2<u32>=vec2(1,1);
                     const TOP:Vec2<u32>=vec2(2,1);
@@ -128,11 +127,11 @@ fn main() {
                 WindowEvent::Resized(_logical_size) => {
                     
                 },
-                WindowEvent::CursorMoved{modifiers:_,device_id:_,position:logical_position} => {
+                WindowEvent::CursorMoved{device_id:_,position:logical_position,..} => {
                     let glutin::dpi::LogicalPosition{x,y}=logical_position;
                     mousepos=vec2(x as f32,y as f32);
                 },
-                WindowEvent::MouseInput{modifiers:_,device_id:_,state,button}=>{
+                WindowEvent::MouseInput{device_id:_,state,button,..}=>{
                     if button==glutin::event::MouseButton::Left{
                         match state{
                             glutin::event::ElementState::Pressed=>{  
