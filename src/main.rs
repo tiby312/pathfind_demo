@@ -29,6 +29,10 @@ fn main() {
 
 
     let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(23,9)).unwrap();
+    
+    let mut dino_tex=glsys.canvas_mut().texture("dino.png",vec2(24,1)).unwrap();
+    
+
     //let mut texture=glsys.canvas_mut().texture("tileset2.png",vec2(15,4)).unwrap();
     
     let wall_save={
@@ -108,7 +112,7 @@ fn main() {
 
     let mut timer=very_simple_2d::RefreshTimer::new(16);
    
-
+    let mut counter=0;
     events_loop.run(move |event,_,control_flow| {
         match event {
             Event::WindowEvent{ event, .. } => match event {
@@ -163,9 +167,9 @@ fn main() {
                         canvas.clear_color([0.2,0.2,0.2]);
 
 
-                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0 + 0.01);
                         //square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
+                        /*
                         {
                             let mut lines = canvas.lines(1.0);
                             for b in bots.iter(){
@@ -192,14 +196,35 @@ fn main() {
                             }
                             lines.send_and_draw([0.0,0.0,1.0,0.3]);
                         }
+                        */
                         
 
+                        /*
                         let mut circles = canvas.circles();
                         for b in bots.iter(){
                             circles.add(b.bot.pos);
                         }
                         circles.send_and_draw([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
+                        */
+
+                        {
+                            let c=4 + ((counter as f32*0.1) as usize % 6);
+
+                            let mut dinos=canvas.sprites();
+                            for (i,b) in bots.iter().enumerate(){
+                                let k=(c+ (i%6)) as u32;
+                                dinos.add(b.bot.pos, dino_tex.coord_to_index(vec2(k,0)));
+                            }
+
+                            dinos.send_and_draw(&dino_tex,[1.0,1.0,1.0,1.0],bot_prop.radius.dis()*2.0);
+                        }
+                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0 + 0.01);
+                        
+
                     }
+
+                    counter+=1;
+
                     glsys.swap_buffers();
                 }
             },
