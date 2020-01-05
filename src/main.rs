@@ -17,10 +17,15 @@ fn main() {
 
     let (mut botsys,area)=pathfind::game::Game::new();
 
-    //let mut glsys=very_simple_2d::WindowedSystem::new(area.inner_as(),&events_loop);
-    let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
+    let a=vec2((1920./1.2f32).floor(),(1080./1.2f32).floor());
+    let mut glsys=very_simple_2d::WindowedSystem::new(a.inner_as(),&events_loop,"pathfind demo");
+    glsys.set_viewport_from_width(area.x);
+    //let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
         
 
+
+    let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(22,9)).unwrap();
+    /*
     let square_save={
         let (grid,walls) = botsys.get_wall_grid();
                     
@@ -39,6 +44,27 @@ fn main() {
         }
         squares.save()
     };
+    */
+    let wall_save={
+        let (grid,walls) = botsys.get_wall_grid();
+                    
+        let mut sprites = glsys.canvas_mut().sprites(); //grid.spacing*0.5
+
+        for x in 0..walls.dim().x{
+            for y in 0..walls.dim().y{
+                if walls.get(vec2(x,y)){
+                    let vv=grid.to_world_topleft(vec2(x,y));
+
+
+                    //squares.add(rect(vv.x,vv.x+grid.spacing,vv.y,vv.y+grid.spacing));
+                    //squares.add(grid.to_world_topleft(vec2(x,y)));
+                    
+                    sprites.add(grid.to_world_center(vec2(x,y)),texture.coord_to_indexp(1 as u32,1 as u32));
+                }
+            }
+        }
+        sprites.save()
+    };
 
     let mut mousepos=vec2(0.0,0.0);
     let mut mouse_active=false;
@@ -48,6 +74,7 @@ fn main() {
 
     let mut timer=very_simple_2d::RefreshTimer::new(16);
    
+
     events_loop.run(move |event,_,control_flow| {
         match event {
             Event::WindowEvent{ event, .. } => match event {
@@ -82,7 +109,7 @@ fn main() {
                 },
                 _=>{}
             },
-            Event::EventsCleared=>{
+            Event::MainEventsCleared=>{
                 if timer.is_ready(){
                     if mouse_active{
                         /*
@@ -102,7 +129,8 @@ fn main() {
                         canvas.clear_color([0.2,0.2,0.2]);
 
 
-                        square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
+                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0);
+                        //square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
                         {
                             let mut lines = canvas.lines(1.0);
@@ -132,11 +160,11 @@ fn main() {
                         }
                         
 
-                        let mut circles = canvas.circles(bot_prop.radius.dis()*0.2);
+                        let mut circles = canvas.circles();
                         for b in bots.iter(){
                             circles.add(b.bot.pos);
                         }
-                        circles.send_and_draw([1.0,0.0,1.0,2.0]);
+                        circles.send_and_draw([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
                     }
                     glsys.swap_buffers();
                 }
