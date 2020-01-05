@@ -19,12 +19,16 @@ fn main() {
 
     let a=vec2((1920./1.2f32).floor(),(1080./1.2f32).floor());
     let mut glsys=very_simple_2d::WindowedSystem::new(a.inner_as(),&events_loop,"pathfind demo");
+    
     glsys.set_viewport_from_width(area.x);
+    //glsys.set_viewport_from_width(300.0);
+        
+
     //let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
         
 
 
-    let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(22,9)).unwrap();
+    let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(23,9)).unwrap();
     //let mut texture=glsys.canvas_mut().texture("tileset2.png",vec2(15,4)).unwrap();
     
     let wall_save={
@@ -79,14 +83,13 @@ fn main() {
                         ([T,F,T,T],_)=>BOTTOM,
                         ([T,F,F,T],_)=>BOTTOM_LEFT,
                         ([T,T,F,T],_)=>LEFT,
+                        
                         ([T,T,T,T],[T,T,T,F])=>vec2(1,5),
                         ([T,T,T,T],[T,T,F,T])=>vec2(2,5),
                         ([T,T,T,T],[F,T,T,T])=>vec2(1,4),
                         ([T,T,T,T],[T,F,T,T])=>vec2(2,4),
-
-
-                         ([T,T,T,T],[T,F,T,F])=>vec2(3,4),
-                         ([T,T,T,T],[F,T,F,T])=>vec2(3,5),
+                        ([T,T,T,T],[T,F,T,F])=>vec2(3,4),
+                        ([T,T,T,T],[F,T,F,T])=>vec2(3,5),
                         _=>INNER
                     };
 
@@ -160,7 +163,7 @@ fn main() {
                         canvas.clear_color([0.2,0.2,0.2]);
 
 
-                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0);
+                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0 + 0.01);
                         //square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
                         {
