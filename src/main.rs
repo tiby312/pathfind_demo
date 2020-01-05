@@ -206,7 +206,8 @@ fn main() {
                         }
                         circles.send_and_draw([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
                         */
-
+                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0 + 0.01);
+                        
                         {
                             let c=4 + ((counter as f32*0.1) as usize % 6);
 
@@ -218,7 +219,6 @@ fn main() {
 
                             dinos.send_and_draw(&dino_tex,[1.0,1.0,1.0,1.0],bot_prop.radius.dis()*2.0);
                         }
-                        wall_save.draw(canvas,&mut texture,[1.0,1.0,1.0,1.0],grid.spacing/2.0 + 0.01);
                         
 
                     }
