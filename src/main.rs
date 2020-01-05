@@ -27,26 +27,6 @@ fn main() {
     let mut texture=glsys.canvas_mut().texture("tileset.png",vec2(22,9)).unwrap();
     //let mut texture=glsys.canvas_mut().texture("tileset2.png",vec2(15,4)).unwrap();
     
-    /*
-    let square_save={
-        let (grid,walls) = botsys.get_wall_grid();
-                    
-        let mut squares = glsys.canvas_mut().rects(); //grid.spacing*0.5
-
-        for x in 0..walls.dim().x{
-            for y in 0..walls.dim().y{
-                if walls.get(vec2(x,y)){
-                    let vv=grid.to_world_topleft(vec2(x,y));
-
-
-                    squares.add(rect(vv.x,vv.x+grid.spacing,vv.y,vv.y+grid.spacing));
-                    //squares.add(grid.to_world_topleft(vec2(x,y)));
-                }
-            }
-        }
-        squares.save()
-    };
-    */
     let wall_save={
         let (grid,walls) = botsys.get_wall_grid();
                     
@@ -73,20 +53,6 @@ fn main() {
 
                     const T:bool=true;
                     const F:bool=false;
-
-                    /*
-                    let c:[([bool;4],Vec2<u32>);8]=[
-                        ([T,T,F,F],TOP_LEFT),
-                        ([T,T,T,F],TOP),
-                        ([F,T,T,F],TOP_RIGHT),
-                        ([F,T,T,T],RIGHT),
-                        ([F,F,T,T],BOTTOM_RIGHT),
-                        ([T,F,T,T],BOTTOM),
-                        ([T,F,F,T],BOTTOM_LEFT),
-                        ([T,T,F,T],LEFT),
-                    ];
-                    */
-
 
                     //RIGHT,BOTTOM,lEFT,TOP
                     let ans1=[
@@ -123,28 +89,6 @@ fn main() {
                          ([T,T,T,T],[F,T,F,T])=>vec2(3,5),
                         _=>INNER
                     };
-                    /*
-                    let coord=match ans{
-                        [T,T,F,F]=>TOP_LEFT,
-                        [T,T,T,F]=>TOP,
-                        [F,T,T,F]=>TOP_RIGHT,
-                        [F,T,T,T]=>RIGHT,
-                        [F,F,T,T]=>BOTTOM_RIGHT,
-                        [T,F,T,T]=>BOTTOM,
-                        [T,F,F,T]=>BOTTOM_LEFT,
-                        [T,T,F,T]=>LEFT,
-                        [T,T,T,T]=>INNER,
-                        _=>INNER
-                    };
-                    */
-
-
-
-
-
-
-
-                    //let coord=TOP;
 
                     sprites.add(grid.to_world_center(vec2(x,y)),texture.coord_to_index(coord));
                 }
