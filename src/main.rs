@@ -140,7 +140,6 @@ fn main() {
                         match state {
                             glutin::event::ElementState::Pressed => {
                                 mouse_active = true;
-
                             }
                             glutin::event::ElementState::Released => {
                                 mouse_active = false;
