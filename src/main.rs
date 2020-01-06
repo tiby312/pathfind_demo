@@ -33,9 +33,6 @@ fn main() {
         .unwrap();
 
     let dino_tex = glsys.canvas_mut().texture("dino.png", vec2(24, 1)).unwrap();
-
-    //let mut texture=glsys.canvas_mut().texture("tileset2.png",vec2(15,4)).unwrap();
-
     let wall_save = {
         let (grid, walls) = botsys.get_wall_grid();
 
@@ -143,6 +140,7 @@ fn main() {
                         match state {
                             glutin::event::ElementState::Pressed => {
                                 mouse_active = true;
+
                             }
                             glutin::event::ElementState::Released => {
                                 mouse_active = false;
