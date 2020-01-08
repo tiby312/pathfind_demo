@@ -12,7 +12,7 @@ rayon = "1.2"
 axgeom = "*"
 pathfind = {path="../pathfind"}
 ordered-float = "1.0.2"
-very_simple_2d={path="../very_simple_2d"}
+egaku2d={path="../egaku2d"}
 #very_simple_2d = "0.5"
 
 [patch.crates-io]

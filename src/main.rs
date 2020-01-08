@@ -1,4 +1,4 @@
-use very_simple_2d::glutin;
+use egaku2d::glutin;
 
 use axgeom::*;
 use fps_counter::FPSCounter;
@@ -20,7 +20,7 @@ fn main() {
 
     let a = vec2((1920. / 1.2f32).floor(), (1080. / 1.2f32).floor());
     let mut glsys =
-        very_simple_2d::WindowedSystem::new(a.inner_as(), &events_loop, "pathfind demo");
+        egaku2d::WindowedSystem::new(a.inner_as(), &events_loop, "pathfind demo");
 
     glsys.set_viewport_from_width(area.x);
     //glsys.set_viewport_from_width(300.0);
@@ -28,11 +28,10 @@ fn main() {
     //let mut glsys=very_simple_2d::FullScreenSystem::new(&events_loop);
 
     let texture = glsys
-        .canvas_mut()
-        .texture("tileset.png", vec2(23, 9))
+        .texture("tileset.png", [23, 9])
         .unwrap();
 
-    let dino_tex = glsys.canvas_mut().texture("dino.png", vec2(24, 1)).unwrap();
+    let dino_tex = glsys.texture("dino.png", [24, 1]).unwrap();
     let wall_save = {
         let (grid, walls) = botsys.get_wall_grid();
 
@@ -42,16 +41,16 @@ fn main() {
             for y in 0..walls.dim().y {
                 let curr = vec2(x, y);
                 if walls.get(curr) {
-                    const TOP_LEFT: Vec2<u32> = vec2(1, 1);
-                    const TOP: Vec2<u32> = vec2(2, 1);
-                    const TOP_RIGHT: Vec2<u32> = vec2(3, 1);
-                    const LEFT: Vec2<u32> = vec2(1, 2);
-                    const RIGHT: Vec2<u32> = vec2(3, 2);
+                    const TOP_LEFT: [u32;2] = [1, 1];
+                    const TOP: [u32;2] = [2, 1];
+                    const TOP_RIGHT: [u32;2] = [3, 1];
+                    const LEFT: [u32;2] = [1, 2];
+                    const RIGHT: [u32;2] = [3, 2];
 
-                    const BOTTOM_LEFT: Vec2<u32> = vec2(1, 3);
-                    const BOTTOM: Vec2<u32> = vec2(2, 3);
-                    const BOTTOM_RIGHT: Vec2<u32> = vec2(3, 3);
-                    const INNER: Vec2<u32> = vec2(2, 2);
+                    const BOTTOM_LEFT: [u32;2] = [1, 3];
+                    const BOTTOM: [u32;2] = [2, 3];
+                    const BOTTOM_RIGHT: [u32;2] = [3, 3];
+                    const INNER: [u32;2] = [2, 2];
 
                     const T: bool = true;
                     const F: bool = false;
@@ -82,17 +81,18 @@ fn main() {
                         ([T, F, F, T], _) => BOTTOM_LEFT,
                         ([T, T, F, T], _) => LEFT,
 
-                        ([T, T, T, T], [T, T, T, F]) => vec2(1, 5),
-                        ([T, T, T, T], [T, T, F, T]) => vec2(2, 5),
-                        ([T, T, T, T], [F, T, T, T]) => vec2(1, 4),
-                        ([T, T, T, T], [T, F, T, T]) => vec2(2, 4),
-                        ([T, T, T, T], [T, F, T, F]) => vec2(3, 4),
-                        ([T, T, T, T], [F, T, F, T]) => vec2(3, 5),
+                        ([T, T, T, T], [T, T, T, F]) => [1, 5],
+                        ([T, T, T, T], [T, T, F, T]) => [2, 5],
+                        ([T, T, T, T], [F, T, T, T]) => [1, 4],
+                        ([T, T, T, T], [T, F, T, T]) => [2, 4],
+                        ([T, T, T, T], [T, F, T, F]) => [3, 4],
+                        ([T, T, T, T], [F, T, F, T]) => [3, 5],
                         _ => INNER,
                     };
 
+                    let pos=grid.to_world_center(vec2(x, y));
                     sprites.add(
-                        grid.to_world_center(vec2(x, y)),
+                        [pos.x,pos.y],
                         texture.coord_to_index(coord),
                     );
                 }
@@ -106,7 +106,7 @@ fn main() {
 
     let _fps = FPSCounter::new();
 
-    let mut timer = very_simple_2d::RefreshTimer::new(16);
+    let mut timer = egaku2d::RefreshTimer::new(16);
 
     let mut counter = 0;
     events_loop.run(move |event, _, control_flow| {
@@ -124,11 +124,11 @@ fn main() {
                 WindowEvent::Resized(_logical_size) => {}
                 WindowEvent::CursorMoved {
                     device_id: _,
-                    position: logical_position,
+                    position,
                     ..
                 } => {
-                    let glutin::dpi::LogicalPosition { x, y } = logical_position;
-                    mousepos = vec2(x as f32, y as f32);
+                    //let glutin::dpi::LogicalPosition { x, y } = logical_position;
+                    mousepos = vec2(position.x as f32, position.y as f32);
                 }
                 WindowEvent::MouseInput {
                     device_id: _,
@@ -206,12 +206,7 @@ fn main() {
                         }
                         circles.send_and_draw([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
                         */
-                        wall_save.draw(
-                            canvas,
-                            &texture,
-                            [1.0, 1.0, 1.0, 1.0],
-                            grid.spacing / 2.0 + 0.01,
-                        );
+                        wall_save.uniforms(canvas,&texture,grid.spacing+0.01).draw();
 
                         {
                             let c = 4 + ((counter as f32 * 0.1) as usize % 6);
@@ -219,14 +214,11 @@ fn main() {
                             let mut dinos = canvas.sprites();
                             for (i, b) in bots.iter().enumerate() {
                                 let k = (c + (i % 6)) as u32;
-                                dinos.add(b.bot.pos, dino_tex.coord_to_index(vec2(k, 0)));
+                                let p=b.bot.pos;
+                                dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]));
                             }
 
-                            dinos.send_and_draw(
-                                &dino_tex,
-                                [1.0, 1.0, 1.0, 1.0],
-                                bot_prop.radius.dis() * 2.0,
-                            );
+                            dinos.uniforms(&dino_tex,bot_prop.radius.dis()*2.0).send_and_draw();
                         }
                     }
 
