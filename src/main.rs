@@ -18,9 +18,9 @@ fn main() {
 
     let (mut botsys, area) = pathfind::game::Game::new();
 
-    let a = vec2((1920. / 1.2f32).floor(), (1080. / 1.2f32).floor());
+    let a = vec2((1920. / 1.2f32).floor(), (1080. / 1.2f32).floor()).inner_as();
     let mut glsys =
-        egaku2d::WindowedSystem::new(a.inner_as(), &events_loop, "pathfind demo");
+        egaku2d::WindowedSystem::new([a.x,a.y], &events_loop, "pathfind demo");
 
     glsys.set_viewport_from_width(area.x);
     //glsys.set_viewport_from_width(300.0);
