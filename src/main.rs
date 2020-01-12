@@ -41,16 +41,16 @@ fn main() {
             for y in 0..walls.dim().y {
                 let curr = vec2(x, y);
                 if walls.get(curr) {
-                    const TOP_LEFT: [u32;2] = [1, 1];
-                    const TOP: [u32;2] = [2, 1];
-                    const TOP_RIGHT: [u32;2] = [3, 1];
-                    const LEFT: [u32;2] = [1, 2];
-                    const RIGHT: [u32;2] = [3, 2];
+                    const TOP_LEFT: [u8;2] = [1, 1];
+                    const TOP: [u8;2] = [2, 1];
+                    const TOP_RIGHT: [u8;2] = [3, 1];
+                    const LEFT: [u8;2] = [1, 2];
+                    const RIGHT: [u8;2] = [3, 2];
 
-                    const BOTTOM_LEFT: [u32;2] = [1, 3];
-                    const BOTTOM: [u32;2] = [2, 3];
-                    const BOTTOM_RIGHT: [u32;2] = [3, 3];
-                    const INNER: [u32;2] = [2, 2];
+                    const BOTTOM_LEFT: [u8;2] = [1, 3];
+                    const BOTTOM: [u8;2] = [2, 3];
+                    const BOTTOM_RIGHT: [u8;2] = [3, 3];
+                    const INNER: [u8;2] = [2, 2];
 
                     const T: bool = true;
                     const F: bool = false;
@@ -94,6 +94,7 @@ fn main() {
                     sprites.add(
                         [pos.x,pos.y],
                         texture.coord_to_index(coord),
+                        0.0,
                     );
                 }
             }
@@ -206,16 +207,16 @@ fn main() {
                         }
                         circles.send_and_draw([1.0,0.0,1.0,2.0],bot_prop.radius.dis()*0.2);
                         */
-                        wall_save.uniforms(canvas,&texture,grid.spacing+0.01).draw();
+                        wall_save.uniforms(canvas,&texture,grid.spacing).draw();
 
                         {
                             let c = 4 + ((counter as f32 * 0.1) as usize % 6);
 
                             let mut dinos = canvas.sprites();
                             for (i, b) in bots.iter().enumerate() {
-                                let k = (c + (i % 6)) as u32;
+                                let k = (c + (i % 6)) as u8;
                                 let p=b.bot.pos;
-                                dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]));
+                                dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]),0.0);
                             }
 
                             dinos.uniforms(&dino_tex,bot_prop.radius.dis()*2.0).send_and_draw();
