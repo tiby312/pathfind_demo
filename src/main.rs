@@ -99,7 +99,7 @@ fn main() {
                 }
             }
         }
-        sprites.save()
+        sprites.save(glsys.canvas_mut())
     };
 
     let mut mousepos = vec2(0.0, 0.0);
@@ -219,7 +219,7 @@ fn main() {
                                 dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]),0.0);
                             }
 
-                            dinos.uniforms(&dino_tex,bot_prop.radius.dis()*2.0).send_and_draw();
+                            dinos.send_and_uniforms(glsys.canvas_mut(),&dino_tex,bot_prop.radius.dis()*2.0).draw();
                         }
                     }
 
