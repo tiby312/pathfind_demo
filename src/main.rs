@@ -171,7 +171,7 @@ fn main() {
 
                         //square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
-                        /*
+                        
                         {
                             let mut lines = canvas.lines(1.0);
                             for b in bots.iter(){
@@ -179,10 +179,10 @@ fn main() {
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
                                     let curr=a.pos();
                                     let curr_pos=grid.to_world_center(curr);
-                                    lines.add(b.bot.pos,curr_pos);
+                                    lines.add(b.bot.pos.into(),curr_pos.into());
                                 }
                             }
-                            lines.send_and_draw([1.0,0.0,0.0,0.3]);
+                            lines.send_and_uniforms(canvas).with_color([1.0,0.0,0.0,0.3]).draw();
                         }
                         {
                             let mut lines = canvas.lines(1.0);
@@ -192,13 +192,13 @@ fn main() {
 
                                     if let Some(next)=a.peek(){
                                         let next_pos=grid.to_world_center(next);
-                                        lines.add(b.bot.pos,next_pos);
+                                        lines.add(b.bot.pos.into(),next_pos.into());
                                     }
                                 }
                             }
-                            lines.send_and_draw([0.0,0.0,1.0,0.3]);
+                            lines.send_and_uniforms(canvas).with_color([0.0,0.0,1.0,0.3]).draw();
                         }
-                        */
+                        
 
                         /*
                         let mut circles = canvas.circles();
