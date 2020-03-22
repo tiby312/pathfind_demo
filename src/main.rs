@@ -160,18 +160,19 @@ fn main() {
                         va.push(v);
                         */
                     }
+                    let canvas = glsys.canvas_mut();
 
-                    botsys.step();
+                    canvas.clear_color([0.2, 0.2, 0.2]);
+
+                    botsys.step(canvas);
                     let (grid, _) = botsys.get_wall_grid();
                     let (bot_prop, bots) = botsys.get_bots();
 
                     {
-                        let canvas = glsys.canvas_mut();
-                        canvas.clear_color([0.2, 0.2, 0.2]);
-
+                    
                         //square_save.draw(canvas,[1.0,1.0,1.0,0.5]);
 
-                        
+                        /*
                         {
                             let mut lines = canvas.lines(1.0);
                             for b in bots.iter(){
@@ -190,7 +191,7 @@ fn main() {
 
                                 if let pathfind::game::GridBotState::Moving(a,_b)=b.state{
 
-                                    if let Some(next)=a.peek(){
+                                    if let Some((_carddir,next))=a.peek(){
                                         let next_pos=grid.to_world_center(next);
                                         lines.add(b.bot.pos.into(),next_pos.into());
                                     }
@@ -198,6 +199,7 @@ fn main() {
                             }
                             lines.send_and_uniforms(canvas).with_color([0.0,0.0,1.0,0.3]).draw();
                         }
+                        */
                         
 
                         /*
@@ -212,14 +214,26 @@ fn main() {
                         {
                             let c = 4 + ((counter as f32 * 0.1) as usize % 6);
 
-                            let mut dinos = canvas.sprites();
+                            //let mut dinos = canvas.sprites();
+                            let mut dinos=canvas.circles();
                             for (i, b) in bots.iter().enumerate() {
                                 let k = (c + (i % 6)) as u8;
                                 let p=b.bot.pos;
-                                dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]),0.0);
+                                dinos.add(p.into());
+                                //dinos.add([p.x,p.y], dino_tex.coord_to_index([k, 0]),0.0);
                             }
+                            dinos.send_and_uniforms(canvas,bot_prop.radius.dis()*2.0).with_color([0.0,1.0,0.0,0.5]).draw();
+                            
 
-                            dinos.send_and_uniforms(glsys.canvas_mut(),&dino_tex,bot_prop.radius.dis()*2.0).draw();
+                            let mut dirs=canvas.lines(2.0);
+                            for b in bots.iter(){
+                                let b=&b.bot;
+                                let k=b.pos+b.vel.normalize_to(1.0)*bot_prop.radius.dis();
+                                dirs.add(b.pos.into(),k.into());
+                            }
+                            dirs.send_and_uniforms(canvas).draw();
+
+                            //dinos.send_and_uniforms(glsys.canvas_mut(),&dino_tex,bot_prop.radius.dis()*2.0).draw();
                         }
                     }
 
