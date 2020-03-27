@@ -12,5 +12,14 @@ rayon = "1.2"
 axgeom = "*"
 pathfind = {path="../pathfind"}
 ordered-float = "1.0.2"
-egaku2d="0.5"
+#egaku2d="0.5"
+egaku2d={path="../egaku2d"}
 
+
+[patch."https://github.com/tiby312/dinotree_alg"]
+dinotree_alg={path="../dinotree_alg"}
+
+
+
+[patch."https://github.com/tiby312/duckduckgeo"]
+duckduckgeo={path="../duckduckgeo"}

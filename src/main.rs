@@ -228,7 +228,7 @@ fn main() {
                             let mut dirs=canvas.lines(2.0);
                             for b in bots.iter(){
                                 let b=&b.bot;
-                                let k=b.pos+b.vel.normalize_to(1.0)*bot_prop.radius.dis();
+                                let k=b.pos+b.vel.normalize_to(1.0)*bot_prop.radius.dis()*0.5;
                                 dirs.add(b.pos.into(),k.into());
                             }
                             dirs.send_and_uniforms(canvas).draw();
